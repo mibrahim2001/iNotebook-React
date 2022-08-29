@@ -19,7 +19,7 @@ export const Login = () => {
           </label>
           <input type="password" className="form-control" id="password" name="password" />
         </div>
-        <button type="submit" className="btn btn-primary" onSubmit={handleSubmit}>
+        <button type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>

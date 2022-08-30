@@ -15,8 +15,7 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGEwNzVjYzQyN2Y2ZmZmZDBiYTVjZSIsImlhdCI6MTY2MTYwMzcxMX0.Y3IgIFraXFvZYJqaiJ4EfJD07xGKP0eOHl8ngGJNiWI",
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = await response.json();
@@ -31,8 +30,7 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGEwNzVjYzQyN2Y2ZmZmZDBiYTVjZSIsImlhdCI6MTY2MTYwMzcxMX0.Y3IgIFraXFvZYJqaiJ4EfJD07xGKP0eOHl8ngGJNiWI",
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });
@@ -44,21 +42,17 @@ const NoteState = (props) => {
   //delete a note
   const deleteNote = async (id) => {
     //TODO Api note
-    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+    await fetch(`${host}/api/notes/deletenote/${id}`, {
       method: "DELETE",
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGEwNzVjYzQyN2Y2ZmZmZDBiYTVjZSIsImlhdCI6MTY2MTYwMzcxMX0.Y3IgIFraXFvZYJqaiJ4EfJD07xGKP0eOHl8ngGJNiWI",
+        "auth-token": localStorage.getItem("token"),
       },
     });
-    const json = await response.json();
-    setNotes(json);
-    const newNotes = notes.filter((note) => {
-      return note._id !== id;
-    });
-    setNotes(newNotes);
+
+    //updating the front end
+    getAllNotes();
   };
 
   //upate a note
@@ -69,8 +63,7 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGEwNzVjYzQyN2Y2ZmZmZDBiYTVjZSIsImlhdCI6MTY2MTYwMzcxMX0.Y3IgIFraXFvZYJqaiJ4EfJD07xGKP0eOHl8ngGJNiWI",
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });

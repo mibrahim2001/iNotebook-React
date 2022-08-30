@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import noteContext from "../context/notes/noteContext";
 
 export const NoteItem = (props) => {
-  //using context to delete note 
+  //using context to delete note
   const context = useContext(noteContext);
   const { deleteNote } = context;
 
@@ -12,13 +12,14 @@ export const NoteItem = (props) => {
   //function to handle click on the delete icon
   const handleDeleteClick = () => {
     deleteNote(note._id);
+    props.showAlert("Note was successfully deleted!", "success");
   };
 
   //function to handle click on the edit icon
- const returnNoteToEdit = () => {
+  const returnNoteToEdit = () => {
     setEditNote(note);
- }
- 
+  };
+
   return (
     <div className="col-md-3">
       <div className="card my-3" style={{ maxWidth: "18rem" }}>

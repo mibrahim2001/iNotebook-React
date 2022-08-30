@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const fetchuser = require("../middleware/fetchuser");
 
 const JWT_SECRET = "hihellohowareyou";
+
+let success = false;
 //ROUTE 1: create a user using : POST "/api/auth/createuser". Dosen't require login
 router.post(
   "/createuser",
@@ -21,14 +23,14 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success: success, errors: errors.array() });
     }
 
     //check wether the user with same email already exist
     try {
       let user = await User.findOne({ email: req.body.email });
       if (user) {
-        return res.status(400).json({ error: "User with this email already exists" });
+        return res.status(400).json({ success: success, error: "User with this email already exists" });
       }
       const salt = await bcrypt.genSalt(10);
       secPass = await bcrypt.hash(req.body.password, salt);
@@ -44,7 +46,9 @@ router.post(
         id: user.id,
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.json(authToken);
+      success = true;
+      res.json({ success: success, authToken: authToken });
+      success = false;
 
       //showing that user in result
       //res.json(user);
@@ -69,26 +73,33 @@ router.post(
     //check for errors in attributes
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success: success, errors: errors.array() });
     }
 
     const { email, password } = req.body;
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: "Please try again the username or password is inccorect!" });
+        return res
+          .status(400)
+          .json({ success: success, error: "Please try again the username or password is incorrect!" });
       }
 
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res.status(400).json({ error: "Please try again the username or password is inccorect!" });
+        return res
+          .status(400)
+          .json({ success: success, error: "Please try again the username or password is incorrect!" });
       }
 
       const data = {
         id: user.id,
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.json({ authtoken: authToken });
+      success = true;
+      res.json({ success: success, authToken: authToken });
+      success = false;
+      //res.json({ authtoken: authToken });
     } catch (error) {
       console.log(error);
       res.status(500).send("Interval server error!");
@@ -96,12 +107,14 @@ router.post(
   }
 );
 
-//ROUTE 3: get loggedin user details : POST "/api/auth/getuser". Do require login
+//ROUTE 3: get logged in user details : POST "/api/auth/getuser". Do require login
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
     let userId = req.user;
     const user = await User.findOne(userId).select("-password");
-    res.send(user);
+    success = true;
+    res.send({ success: success, user: user });
+    success = false;
   } catch (error) {
     console.log(error);
     res.status(500).send("Interval server error!");

@@ -1,9 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   let location = useLocation();
-
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -36,12 +41,20 @@ export const Navbar = () => {
               </li>
             </ul>
             <div>
-              <Link class="btn btn-dark mx-2" to="/login" role="button">
-                Login
-              </Link>
-              <Link class="btn btn-dark mx-2" to="/signup" role="button">
-                SignUp
-              </Link>
+              {!localStorage.getItem("token") ? (
+                <div>
+                  <Link className="btn btn-dark mx-2" to="/login" role="button">
+                    Login
+                  </Link>
+                  <Link className="btn btn-dark mx-2" to="/signup" role="button">
+                    SignUp
+                  </Link>
+                </div>
+              ) : (
+                <button className="btn btn-dark mx-2" onClick={handleLogout}>
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         </div>

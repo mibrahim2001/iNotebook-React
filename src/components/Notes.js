@@ -3,28 +3,35 @@ import noteContext from "../context/notes/noteContext";
 import { NoteItem } from "./NoteItem";
 import { AddNote } from "./AddNote";
 import { Modal } from "./Modal";
+import { useNavigate } from "react-router-dom";
 
-export const Notes = () => {
-  //using context to get all the notes 
+export const Notes = (props) => {
+  //using context to get all the notes
   const context = useContext(noteContext);
   const { notes, getAllNotes } = context;
-  useEffect(()=>{
-    getAllNotes();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      getAllNotes();
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line
-  },[]);
+  }, []);
 
   //making a use state to pass the note to edit to the modal component as a prop
- const [editNote, setEditNote] = useState({_id:"",title:"",description:"", tag:"default"});
+  const [editNote, setEditNote] = useState({ _id: "", title: "", description: "", tag: "default" });
 
   return (
     <>
-      <AddNote />
-      <Modal editNote={editNote} />
+      <AddNote showAlert={props.showAlert} />
+      <Modal editNote={editNote} showAlert={props.showAlert} />
       <div className="row my-3">
         <h1>Yours notes</h1>
         {/* adding all our notes as note item components */}
         {notes.map((note) => {
-          return <NoteItem key={note._id} note={note} setEditNote={setEditNote} />;
+          return <NoteItem key={note._id} note={note} setEditNote={setEditNote} showAlert={props.showAlert} />;
         })}
       </div>
     </>

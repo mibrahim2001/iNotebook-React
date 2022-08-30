@@ -21,6 +21,7 @@ export const Modal = (props) => {
 
   const handleSaveChangesClick = () => {
     editNote(_id, note.etitle, note.edescription, note.etag);
+    props.showAlert("Note was successfully edited!", "success");
   };
 
   const handleOnChange = (e) => {
